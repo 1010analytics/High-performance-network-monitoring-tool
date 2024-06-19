@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Network Monitoring Dashboard</title>
+    <script type="text/javascript">
+      var ws = new WebSocket("ws://localhost:3030/ws");
+      ws.onmessage = function (event) {
+        document.getElementById("data").innerText = event.data;
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Network Monitoring Dashboard</h1>
+    <div id="data">Waiting for data...</div>
+  </body>
+</html>
