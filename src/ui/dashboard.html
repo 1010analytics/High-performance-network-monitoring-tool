@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Monitoring Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      #dashboard {
+        padding: 20px;
+      }
+      h2 {
+        color: #333;
+      }
+      .data-section {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="dashboard">
+      <h1>Network Monitoring Dashboard</h1>
+
+      <div class="data-section">
+        <h2>Real-Time Traffic Analysis</h2>
+        <div id="traffic-analysis">Loading...</div>
+      </div>
+
+      <div class="data-section">
+        <h2>Packet Loss</h2>
+        <div id="packet-loss">Loading...</div>
+      </div>
+
+      <div class="data-section">
+        <h2>Threat Detection</h2>
+        <div id="threat-detection">Loading...</div>
+      </div>
+    </div>
+
+    <script>
+      function updateTrafficAnalysis(data) {
+        document.getElementById("traffic-analysis").innerText = data;
+      }
+
+      function updatePacketLoss(data) {
+        document.getElementById("packet-loss").innerText = data;
+      }
+
+      function updateThreatDetection(data) {
+        document.getElementById("threat-detection").innerText = data;
+      }
+
+      setInterval(() => {
+        updateTrafficAnalysis("1000 packets/sec");
+        updatePacketLoss("0.5% loss");
+        updateThreatDetection("No threats detected");
+      }, 1000);
+    </script>
+  </body>
+</html>

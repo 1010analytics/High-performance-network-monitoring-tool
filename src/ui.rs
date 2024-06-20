@@ -1,3 +1,5 @@
+
+
 use warp::Filter;
 use warp::ws::{WebSocket, Message};
 use futures_util::{stream::StreamExt, sink::SinkExt};
@@ -29,7 +31,17 @@ async fn handle_ws_connection(websocket: WebSocket) {
     while let Some(result) = rx.next().await {
         if let Ok(msg) = result {
             if let Ok(text) = msg.to_str() {
-                println!("Received message: {}", text);
+                match text {
+                    "start" => {
+                        let _ = data_tx.send("Starting packet capture...".to_string());
+                    },
+                    "stop" => {
+                        let _ = data_tx.send("Stopping packet capture...".to_string());
+                    },
+                    _ => {
+                        let _ = data_tx.send(format!("Received unknown command: {}", text));
+                    }
+                }
             }
         }
     }
