@@ -1,10 +1,9 @@
-
-
 use warp::Filter;
 use warp::ws::{WebSocket, Message};
 use futures_util::{stream::StreamExt, sink::SinkExt};
 use tokio::sync::mpsc;
 use tokio::task;
+use log::{info, error};
 
 pub async fn start_server() {
     let routes = warp::path("ws")
@@ -22,26 +21,36 @@ async fn handle_ws_connection(websocket: WebSocket) {
 
     task::spawn(async move {
         while let Some(data) = data_rx.recv().await {
-            if tx.send(Message::text(data)).await.is_err() {
+            if let Err(e) = tx.send(Message::text(data)).await {
+                error!("Failed to send message: {:?}", e);
                 break;
             }
         }
     });
 
     while let Some(result) = rx.next().await {
-        if let Ok(msg) = result {
-            if let Ok(text) = msg.to_str() {
-                match text {
-                    "start" => {
-                        let _ = data_tx.send("Starting packet capture...".to_string());
-                    },
-                    "stop" => {
-                        let _ = data_tx.send("Stopping packet capture...".to_string());
-                    },
-                    _ => {
-                        let _ = data_tx.send(format!("Received unknown command: {}", text));
+        match result {
+            Ok(msg) => {
+                if let Ok(text) = msg.to_str() {
+                    info!("Received message: {}", text);
+                    match text {
+                        "start" => {
+                            let _ = data_tx.send("Starting packet capture...".to_string());
+                            info!("Packet capture started.");
+                        },
+                        "stop" => {
+                            let _ = data_tx.send("Stopping packet capture...".to_string());
+                            info!("Packet capture stopped.");
+                        },
+                        _ => {
+                            let _ = data_tx.send(format!("Received unknown command: {}", text));
+                            info!("Unknown command received: {}", text);
+                        }
                     }
                 }
+            }
+            Err(e) => {
+                error!("Error receiving message: {:?}", e);
             }
         }
     }

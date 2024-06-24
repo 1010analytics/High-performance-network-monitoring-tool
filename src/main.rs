@@ -2,6 +2,8 @@ mod analysis;
 mod capture;
 mod ui;
 
+
+
 #[tokio::main]
 async fn main() {
     println!("Starting High-Performance Network Monitoring Tool...");
@@ -16,6 +18,7 @@ async fn main() {
             data_tx.send(analyzed_data).unwrap();
         }
     });
+    
 
     ui::start_server().await;
 }
